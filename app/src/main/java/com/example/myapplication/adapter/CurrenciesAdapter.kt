@@ -12,7 +12,7 @@ import com.example.myapplication.R
 
 class CurrenciesAdapter(private val context: Context) : RecyclerView.Adapter<CurrenciesAdapter.MyViewHolder>() {
 
-    var list: List<CurrencyResponse> = mutableListOf()
+    var list: List<Pair<String, Double>> = mutableListOf()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -30,11 +30,11 @@ class CurrenciesAdapter(private val context: Context) : RecyclerView.Adapter<Cur
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val user = list.get(position)
-        holder.name.text = user.quotes.USDAOA.toString()
-        holder.info1.text = user?.quotes.USDALL.toString()
-        holder.info2.text = user?.quotes.USDAED.toString()
-      //  val addressObj = user.quotes.USDAOA.toString()
-        holder.address.text = user.quotes.USDAFN.toString()
+        holder.name.text = user.first
+        holder.info1.text = user.second.toString()
+//        holder.info2.text = user?.quotes.USDAED.toString()
+//        val addressObj = user.quotes.USDAOA.toString()
+//        holder.address.text = user.quotes.USDAFN.toString()
     }
 
     class MyViewHolder(var view: View) : RecyclerView.ViewHolder(view){

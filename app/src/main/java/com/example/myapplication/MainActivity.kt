@@ -1,16 +1,14 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.Utility.hideProgressBar
-import com.example.myapplication.internet.*
 import com.example.myapplication.Utility.isInternetAvailable
 import com.example.myapplication.Utility.showProgressBar
 import com.example.myapplication.adapter.CurrenciesAdapter
-import com.example.myapplication.internet.CurrenciesResponse
+import com.example.myapplication.internet.*
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,25 +41,26 @@ class MainActivity : AppCompatActivity() {
 
         showProgressBar()
 
-        var apiInterface: CurrenciesResponse = CurrencyClient().getApiClient()!!.create(
+        val apiInterface: CurrenciesResponse = CurrencyClient().getApiClient()!!.create(
                 CurrenciesResponse::class.java
         )
 
-        apiInterface.getCurrencies().enqueue(object : Callback <List<CurrencyResponse>> {
+        apiInterface.getCurrencies().enqueue(object : Callback<CurrencyResponse> {
             override fun onResponse(
-                    call: Call <List<CurrencyResponse>>,
-                    response: Response <List<CurrencyResponse>>)
+                    call: Call<CurrencyResponse>,
+                    response: Response<CurrencyResponse>,
+            ) {
+                hideProgressBar()
+                val currencyResponse = response.body()
+                currencyResponse?.quotes?.toList()?.let {
+                    adapter?.list = it
+                }
+            }
 
-             {
-            hideProgressBar()
-            val currencyResponse = response.body()
-            adapter?.list = currencyResponse!!
-        }
-
-            override fun onFailure(call: Call<List<CurrencyResponse>>, t: Throwable) {
-            hideProgressBar()
-            Log.e("error", t.localizedMessage)
-        }
+            override fun onFailure(call: Call<CurrencyResponse>, t: Throwable) {
+                hideProgressBar()
+                Log.e("error", t.localizedMessage)
+            }
         })
     }
 }
